@@ -1,7 +1,7 @@
 Player = Entity:extend()
 
 function Player:new(x, y, width, height, speed, up_key, down_key)
-	Player.super.new(self, x, y, width, height)
+	Player.super.new(self, x, y, width, height, 10)
 	self.speed = speed
 	self.up_key = up_key
 	self.down_key = down_key

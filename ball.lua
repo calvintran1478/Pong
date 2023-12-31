@@ -1,7 +1,7 @@
 Ball = Entity:extend()
 
 function Ball:new(x, y, size)
-	Ball.super.new(self, x, y, size, size)
+	Ball.super.new(self, x, y, size, size, 0)
 	self.size = size
 end
 

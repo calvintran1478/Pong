@@ -12,7 +12,7 @@ function love.load()
     local player_height = 100
     local player_speed = 300
     local ball_size = 25
-    local ball_speed = 175
+    local ball_speed = 300
     local ball_spawn_range = 120
     local ball_initial_vy_range = 100
     local score_goal = 5
@@ -44,6 +44,15 @@ end
 function love.update(dt)
     for i,obj in ipairs(objects) do
         obj:update(dt)
+    end
+
+    -- Resolve collisions between ball and players
+    if ball:resolveCollision(player1) then
+        ball.v_x = -ball.v_x
+        ball.v_y = ball.v_y + player1.v_y / 2
+    elseif ball:resolveCollision(player2) then
+        ball.v_x = -ball.v_x
+        ball.v_y = ball.v_y + player2.v_y / 2
     end
 end
 
