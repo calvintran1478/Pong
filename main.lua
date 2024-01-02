@@ -116,7 +116,12 @@ function love.draw()
         love.graphics.print(player2.score, window_width * (3 / 4), 20, 0, 1.5, 1.5)
 
         -- Line separator
-        love.graphics.line(window_width / 2, 0, window_width / 2, window_height)
+        local num_dashes = 12
+        local line_height = window_height / (num_dashes * 2)
+        local center = window_width / 2
+        for i=0,num_dashes-1 do
+            love.graphics.line(center, (2 * i) * line_height, center, (2 * i + 1) * line_height)
+        end
 
         -- Display players and ball
         for i,obj in ipairs(objects) do
