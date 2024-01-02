@@ -1,14 +1,15 @@
 function initialize_game()
     local window_width, window_height = love.graphics.getDimensions()
+    local margin = 10
 
     -- Initialize player 1 position and velocity
-    player1.x = game.margin
+    player1.x = margin
     player1.y = (window_height - player1.height) / 2
     player1.v_x = 0
     player1.v_y = 0
 
     -- Initialize player 2 position and velocity
-    player2.x = window_width - player2.width - game.margin
+    player2.x = window_width - player2.width - margin
     player2.y = (window_height - player2.height) / 2
     player2.v_x = 0
     player2.v_y = 0
@@ -17,10 +18,11 @@ function initialize_game()
     local offset = love.math.random(-game.ball_spawn_range, game.ball_spawn_range)
     ball.x = (window_width - ball.size) / 2
     ball.y = (window_height - ball.size) / 2 + offset
+    ball.touched = false
     if love.math.random(0, 1) == 0 then
-        ball.v_x = game.initial_ball_speed
+        ball.v_x = game.untouched_ball_speed
     else
-        ball.v_x = -game.initial_ball_speed
+        ball.v_x = -game.untouched_ball_speed
     end
     ball.v_y = love.math.random(-game.ball_initial_vy_range, game.ball_initial_vy_range)
 end
@@ -42,16 +44,16 @@ function love.load()
     -- Game parameters
     local player_width = 20
     local player_height = 100
-    local player_speed = 500
+    local player_speed = 520
     local ball_size = 25
     game = {
-        initial_ball_speed = 500,
+        untouched_ball_speed = 250,
+        initial_touched_ball_speed = 500,
         ball_speedup = 5,
         ball_spawn_range = 120,
         ball_initial_vy_range = 100,
         control_factor = 0.20,
-        score_goal = 5,
-        margin = 10
+        score_goal = 5
     }
 
     -- Initialize game
@@ -60,9 +62,10 @@ function love.load()
     ball = Ball(0, 0, ball_size)
     initialize_game()
 
-    -- Text fonts
+    -- Text fonts and Sound Effects
     normalFont = love.graphics.newFont(16)
     largerFont = love.graphics.newFont(40)
+    sfx = love.audio.newSource("sfx/ping_pong_8bit_plop.ogg", "static")
 
     -- Add players and ball to a list of game objects
     objects = {}
@@ -79,12 +82,27 @@ function love.update(dt)
         end
 
         -- Resolve collisions between ball and players
+        local colliding_player
         if ball:resolveCollision(player1) then
-            ball.v_x = -ball.v_x + game.ball_speedup
-            ball.v_y = ball.v_y + player1.v_y * game.control_factor
+            colliding_player = player1
         elseif ball:resolveCollision(player2) then
-            ball.v_x = -ball.v_x - game.ball_speedup
-            ball.v_y = ball.v_y + player2.v_y * game.control_factor
+            colliding_player = player2
+        end
+
+        if colliding_player then
+            -- Reflect ball to the other direction
+            local speedup
+            if not ball.touched then
+                ball.touched = true
+                speedup = game.initial_touched_ball_speed - game.untouched_ball_speed
+            else
+                speedup = game.ball_speedup
+            end
+            ball:reflect(speedup)
+            ball.v_y = ball.v_y + colliding_player.v_y * game.control_factor
+
+            -- Play sound effect
+            sfx:play()
         end
 
         -- Check if any players have scored

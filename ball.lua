@@ -3,6 +3,15 @@ Ball = Entity:extend()
 function Ball:new(x, y, size)
 	Ball.super.new(self, x, y, size, size, 0)
 	self.size = size
+	self.touched = false
+end
+
+function Ball:reflect(speedup)
+	if self.v_x > 0 then
+		self.v_x = -self.v_x - speedup
+	else
+		self.v_x = -self.v_x + speedup
+	end
 end
 
 function Ball:update(dt)
