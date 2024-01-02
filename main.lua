@@ -60,6 +60,10 @@ function love.load()
     ball = Ball(0, 0, ball_size)
     initialize_game()
 
+    -- Text fonts
+    normalFont = love.graphics.newFont(16)
+    largerFont = love.graphics.newFont(40)
+
     -- Add players and ball to a list of game objects
     objects = {}
     table.insert(objects, player1)
@@ -104,9 +108,10 @@ function love.update(dt)
 end
 
 function love.draw()
+    local window_width, window_height = love.graphics.getDimensions()
     if not game.winner then
         -- Display score
-        local window_width, window_height = love.graphics.getDimensions()
+        love.graphics.setFont(normalFont)
         love.graphics.print(player1.score, window_width * (1 / 4), 20, 0, 1.5, 1.5)
         love.graphics.print(player2.score, window_width * (3 / 4), 20, 0, 1.5, 1.5)
 
@@ -119,6 +124,13 @@ function love.draw()
         end
     else
         -- Display winner
-        love.graphics.print(string.format("%s wins!", game.winner.name), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 0, 2, 2)
+        local winner_text = string.format("%s wins!", game.winner.name)
+        local play_again_text = "Press R to play again"
+        local font_height = largerFont:getHeight()
+        local limit = 500
+
+        love.graphics.setFont(largerFont)
+        love.graphics.printf(winner_text, (window_width - largerFont:getWidth(winner_text)) / 2, (window_height - font_height) / 2 - 60, limit, "left")
+        love.graphics.printf(play_again_text, (window_width - largerFont:getWidth(play_again_text)) / 2, (window_height - font_height) / 2 + 30, limit, "left")
     end
 end
