@@ -63,8 +63,8 @@ function love.load()
     initialize_game()
 
     -- Text fonts and Sound Effects
-    normalFont = love.graphics.newFont(16)
-    largerFont = love.graphics.newFont(40)
+    normal_font = love.graphics.newFont(24)
+    larger_font = love.graphics.newFont(40)
     sfx = love.audio.newSource("sfx/ping_pong_8bit_plop.ogg", "static")
 
     -- Add players and ball to a list of game objects
@@ -77,7 +77,7 @@ end
 function love.update(dt)
     if not game.winner then
         -- Update position of ball and players
-        for i,obj in ipairs(objects) do
+        for _,obj in ipairs(objects) do
             obj:update(dt)
         end
 
@@ -129,9 +129,9 @@ function love.draw()
     local window_width, window_height = love.graphics.getDimensions()
     if not game.winner then
         -- Display score
-        love.graphics.setFont(normalFont)
-        love.graphics.print(player1.score, window_width * (1 / 4), 20, 0, 1.5, 1.5)
-        love.graphics.print(player2.score, window_width * (3 / 4), 20, 0, 1.5, 1.5)
+        love.graphics.setFont(normal_font)
+        love.graphics.print(player1.score, window_width * 0.25, 20)
+        love.graphics.print(player2.score, window_width * 0.75, 20)
 
         -- Line separator
         local num_dashes = 12
@@ -142,18 +142,18 @@ function love.draw()
         end
 
         -- Display players and ball
-        for i,obj in ipairs(objects) do
+        for _,obj in ipairs(objects) do
             obj:draw()
         end
     else
         -- Display winner
         local winner_text = string.format("%s wins!", game.winner.name)
         local play_again_text = "Press R to play again"
-        local font_height = largerFont:getHeight()
+        local font_height = larger_font:getHeight()
         local limit = 500
 
-        love.graphics.setFont(largerFont)
-        love.graphics.printf(winner_text, (window_width - largerFont:getWidth(winner_text)) / 2, (window_height - font_height) / 2 - 60, limit, "left")
-        love.graphics.printf(play_again_text, (window_width - largerFont:getWidth(play_again_text)) / 2, (window_height - font_height) / 2 + 30, limit, "left")
+        love.graphics.setFont(larger_font)
+        love.graphics.printf(winner_text, (window_width - larger_font:getWidth(winner_text)) / 2, (window_height - font_height) / 2 - 60, limit, "left")
+        love.graphics.printf(play_again_text, (window_width - larger_font:getWidth(play_again_text)) / 2, (window_height - font_height) / 2 + 30, limit, "left")
     end
 end
