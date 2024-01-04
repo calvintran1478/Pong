@@ -1,5 +1,6 @@
 function love.conf(t)
 	t.window.title = "Pong"
+	t.version = "11.5"
 
 	-- Disable unused modules
 	t.modules.data = false

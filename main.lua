@@ -31,6 +31,9 @@ function love.keypressed(key)
     -- Restart game
     if key == "r" and game.winner then
         love.load()
+    -- Mute/unmute audio
+    elseif key == "m" then
+        game.mute = not game.mute
     end
 end
 
@@ -53,7 +56,8 @@ function love.load()
         ball_spawn_range = 120,
         ball_initial_vy_range = 100,
         control_factor = 0.20,
-        score_goal = 5
+        score_goal = 5,
+        mute = false,
     }
 
     -- Initialize game
@@ -102,7 +106,9 @@ function love.update(dt)
             ball.v_y = ball.v_y + colliding_player.v_y * game.control_factor
 
             -- Play sound effect
-            sfx:play()
+            if not game.mute then
+                sfx:play()
+            end
         end
 
         -- Check if any players have scored
